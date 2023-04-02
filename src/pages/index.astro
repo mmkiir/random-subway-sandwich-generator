@@ -8,9 +8,148 @@ import "@picocss/pico";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
+    <title>Random Subway Sandwich Generator</title>
   </head>
   <body>
-    <h1>Astro</h1>
+    <div class="container my-12">
+      <h1 class="my-12 text-center lg:text-left">
+        🥪
+        <br class="lg:hidden" />
+        Random Subway Sandwich Generator
+        <br class="lg:hidden" />
+        🥪
+      </h1>
+      <div class="my-12">
+        <select name="location" id="location" class="w-min">
+          <option value="India">🇮🇳 India</option>
+        </select>
+        <div>
+          <input type="checkbox" name="veg" id="veg" role="switch" />
+          <label for="veg">Veg</label>
+        </div>
+      </div>
+      <div class="my-12">
+        🍖 <strong>Filling</strong>: <span id="filling"></span><br />
+        🍞 <strong>Bread</strong>: <span id="bread"></span><br />
+        🧀 <strong>Cheese</strong>: <span id="cheese"></span><br />
+        🥗 <strong>Vegetables</strong>: <span id="vegetables"></span><br />
+        🌶️ <strong>Sauces</strong>: <span id="sauces"></span><br />
+      </div>
+      <button
+        id="generateSandwichButton"
+        class="sm:w-min sm:whitespace-nowrap my-12">Generate Sandwich</button
+      >
+    </div>
   </body>
 </html>
+
+<script>
+  const vegFillings = [
+    "Aloo patty",
+    "Chatpata chana",
+    "Corn and peas",
+    "Hara bhara patty",
+    "Mexican patty",
+    "Paneer tikka",
+    "Tandoori Tofu",
+    "Veg shammi",
+    "Veggie delight",
+    "Veg seekh",
+  ];
+
+  const nonVegFillings = [
+    "Egg and cheese",
+    "Chicken slice egg and cheese",
+    "Chicken kofta",
+    "Chicken slice",
+    "Chicken teriyaki",
+    "Roasted chicken strip",
+    "Tandoori chicken tikka",
+    "Tuna",
+    "Turkey and chicken slice",
+    "Turkey",
+    "New B.M.T",
+    "New Subway club",
+    "New Peri peri chicken",
+  ];
+
+  const breads = [
+    "Multigrain bread",
+    "Multigrain honey oats bread",
+    "Parmesan oregano bread",
+    "White Italian bread",
+    "Roasted garlic bread",
+  ];
+
+  const cheeses = [
+    "Plain bread",
+    "Plain bread with cheese slice",
+    "Toasted bread with cheese slice",
+    "Toasted bread",
+    "Toasted bread with mozzarella cheese",
+  ];
+
+  const vegetables = [
+    "Lettuce",
+    "Tomatoes",
+    "Cucumbers",
+    "Pickles",
+    "Capsicums",
+    "Olives",
+    "Onions",
+    "Jalapenos",
+  ];
+
+  const sauces = [
+    "Barbecue sauce",
+    "Eggless mayonnaise sauce",
+    "Honey mustard sauce",
+    "Marinara sauce",
+    "Mint mayonnaise sauce",
+    "Red chilli sauce",
+    "Southwest chipotle sauce",
+    "Sweet onion sauce",
+    "Tandoori mayonnaise sauce",
+  ];
+
+  type Sandwich = {
+    bread: string;
+    cheese: string;
+    filling: string;
+    vegetables: string[];
+    sauces: string[];
+  };
+
+  function randomItem<T>(items: T[]): T {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function randomSandwich(): Sandwich {
+    const isVeg = (document.getElementById("veg")! as HTMLInputElement).checked;
+    const filling = randomItem(isVeg ? vegFillings : nonVegFillings);
+    const bread = randomItem(breads);
+    const cheese = randomItem(cheeses);
+    const _vegetables = Array(4)
+      .fill(0)
+      .map(() => randomItem(vegetables));
+    const _sauces = Array(4)
+      .fill(0)
+      .map(() => randomItem(sauces));
+    return { bread, cheese, filling, vegetables: _vegetables, sauces: _sauces };
+  }
+
+  function generateSandwich() {
+    const sandwich = randomSandwich();
+    document.getElementById("filling")!.innerText = sandwich.filling;
+    document.getElementById("bread")!.innerText = sandwich.bread;
+    document.getElementById("cheese")!.innerText = sandwich.cheese;
+    document.getElementById("vegetables")!.innerText =
+      sandwich.vegetables.join(", ");
+    document.getElementById("sauces")!.innerText = sandwich.sauces.join(", ");
+  }
+
+  generateSandwich();
+  document
+    .getElementById("generateSandwichButton")!
+    .addEventListener("click", generateSandwich);
+</script>
